@@ -76,6 +76,7 @@ model Pet {
   species     Species
   color       String
   size        Size
+  adopted     Boolean     @default(false)
 
   Org    Org    @relation(fields: [org_id], references: [id])
   org_id String
