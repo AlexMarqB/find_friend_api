@@ -12,3 +12,96 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Personality {
+  CALM
+  ACTIVE
+  LAZY
+  SLEEPY
+}
+
+enum Species {
+  DOG
+  CAT
+  RODENT
+  BIRD
+}
+
+enum Size {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum States {
+  AC
+  AL
+  AP
+  AM
+  BA
+  CE
+  DF
+  ES
+  GO
+  MA
+  MT
+  MS
+  MG
+  PA
+  PB
+  PR
+  PE
+  PI
+  RJ
+  RN
+  RS
+  RO
+  RR
+  SC
+  SP
+  SE
+  TO
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+model Pet {
+  id          String      @id @default(cuid())
+  name        String
+  personality Personality
+  age         Int
+  species     Species
+  color       String
+  size        Size
+
+  Org    Org    @relation(fields: [org_id], references: [id])
+  org_id String
+
+  @@map("tb_pets")
+}
+
+model Org {
+  id    String @id @default(cuid())
+  name  String
+  phone String
+  email String
+  city  String
+  state States
+
+  pets  Pet[]
+  users User[]
+}
+
+model User {
+  id    String @id @default(cuid())
+  name  String
+  email String
+  phone String
+  role  Role   @default(USER)
+
+  Org    Org?    @relation(fields: [org_id], references: [id])
+  org_id String?
+}
