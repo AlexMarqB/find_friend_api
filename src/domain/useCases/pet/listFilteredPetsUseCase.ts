@@ -10,7 +10,7 @@ interface ListFilteredPetsResponse {
     pets: Pet[]
 }
 
-export class ListFilteredPets {
+export class ListFilteredPetsUseCase {
     constructor(private repository: PetRepository) {}
 
     async execute({orgs, filters}: ListFilteredPetsRequest): Promise<ListFilteredPetsResponse> {

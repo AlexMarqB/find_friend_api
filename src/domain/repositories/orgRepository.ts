@@ -1,14 +1,7 @@
-import { Prisma, Pet, Personality, Species, Size, Org } from "@prisma/client";
-
-export interface filterProps {
-	personality: Personality;
-	age: number;
-	species: Species;
-	color: String;
-	size: Size;
-}
+import { Prisma, Org } from "@prisma/client";
 
 export interface OrgRepository {
 	register(userId: string, data: Prisma.OrgUncheckedCreateInput): Promise<Org>;
+	getById(id: string): Promise<Org | null>;
     listOrgsByCity(city: string): Promise<Org[]>;
 }
