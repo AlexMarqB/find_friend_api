@@ -85,15 +85,15 @@ model Pet {
 }
 
 model Org {
-  id    String @id @default(cuid())
-  name  String
-  phone String
-  email String
-  city  String
-  state States
+  id       String @id @default(cuid())
+  name     String
+  phone    String
+  email    String
+  password String
+  city     String
+  state    States
 
-  pets  Pet[]
-  users User[]
+  pets Pet[]
 }
 
 model User {
@@ -103,7 +103,4 @@ model User {
   phone    String
   password String
   role     Role   @default(USER)
-
-  Org    Org?    @relation(fields: [org_id], references: [id])
-  org_id String?
 }
