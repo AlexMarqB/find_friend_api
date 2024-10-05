@@ -5,10 +5,9 @@ import { OrgRepository } from "../repositories/orgRepository";
 export class InMemoryOrgRepository implements OrgRepository {
     items: Org[] = []
 
-    async register(userId: string, data: Prisma.OrgUncheckedCreateInput): Promise<Org> {
+    async register(data: Prisma.OrgUncheckedCreateInput): Promise<Org> {
         const org = {
             id: cuid(),
-            user_id: userId,
             ...data
         }
 
@@ -24,7 +23,7 @@ export class InMemoryOrgRepository implements OrgRepository {
     }
 
     async listOrgsByCity(city: string): Promise<Org[]> {
-        const orgs = this.items.filter(org => org.city === city)
+        const orgs = this.items.filter(org => org.city.includes(city))
 
         return orgs
     }

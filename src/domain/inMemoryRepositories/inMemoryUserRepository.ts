@@ -8,7 +8,6 @@ export class InMemoryUserRepository implements UserRepository {
     async register(data: Prisma.UserCreateInput): Promise<User> {
         const user: User = {
             id: cuid(),
-            org_id: null,
             role: Role.USER,
             ...data
         }
