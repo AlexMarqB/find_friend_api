@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { InMemoryPetRepository } from "../../../src/domain/inMemoryRepositories/inMemoryPetRepository";
 import { Personality, Size, Species } from "@prisma/client";
 import { GetPetByIdUseCase } from "../../../src/domain/useCases/pet/getPetByIdUseCase";
@@ -8,9 +8,16 @@ let repository = new InMemoryPetRepository();
 let sut = new GetPetByIdUseCase(repository);
 
 describe("Unity testing getPetByIdUseCase", async () => {
+	let repository = new InMemoryPetRepository();
+	let sut = new GetPetByIdUseCase(repository);
+
+	beforeEach(() => {
+		repository = new InMemoryPetRepository();
+		sut = new GetPetByIdUseCase(repository);
+	});
 	it("Should be able to get a pet by its Id", async () => {
 		const pet = await repository.register({
-            id: "1",
+			id: "1",
 			name: "Rex",
 			age: 3,
 			color: "Brown",
@@ -20,7 +27,7 @@ describe("Unity testing getPetByIdUseCase", async () => {
 			org_id: "1",
 		});
 
-        const response = await sut.execute({id: "1"});
+		const response = await sut.execute({ id: "1" });
 
 		expect(response.pet).toBeDefined();
 
@@ -28,6 +35,6 @@ describe("Unity testing getPetByIdUseCase", async () => {
 	});
 
 	it("Should return null if no pet was found", async () => {
-		await expect((await sut.execute({id: "2"})).pet).toBeNull()
-	})
+		await expect((await sut.execute({ id: "2" })).pet).toBeNull();
+	});
 });
