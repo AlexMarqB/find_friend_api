@@ -1,15 +1,15 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { InMemoryOrgRepository } from "../../../src/domain/inMemoryRepositories/inMemoryOrgRepository";
-import { GetOrgByIdUseCase } from "../../../src/domain/useCases/org/getOrgByIdUseCase";
+import { GetOrgByCnpjUseCase } from "../../../src/domain/useCases/org/getOrgByCnpjUseCase";
 import { ResourceNotFoundError } from "../../../src/errors/ResourceNotFoundError";
 
-describe("Unity testing getOrgByIdUseCase", async () => {
+describe("Unity testing getOrgByCnpjUseCase", async () => {
     let repository = new InMemoryOrgRepository();
-    let sut = new GetOrgByIdUseCase(repository);
+    let sut = new GetOrgByCnpjUseCase(repository);
 
     beforeEach(() => {
         repository = new InMemoryOrgRepository();
-        sut = new GetOrgByIdUseCase(repository);
+        sut = new GetOrgByCnpjUseCase(repository);
     });
 	it("Should be able to get an organization by its Cnpj", async () => {
 		const org = await repository.register({
