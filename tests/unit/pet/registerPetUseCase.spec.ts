@@ -19,12 +19,14 @@ describe("Unity testing registerPetUseCase", () => {
     });
 
     it("Should register a pet", async () => {
-        const org = await orgRepository.register("1", {
+        const org = await orgRepository.register({
+            id: "1",
             name: "Animal Shelter",
             city: "Petville",
             state: "RS",
             phone: "555-1234",
-            email: "contact@animalshelter.org"
+            email: "contact@animalshelter.org",
+            password: "123456"
         });
 
         const response = await sut.execute({

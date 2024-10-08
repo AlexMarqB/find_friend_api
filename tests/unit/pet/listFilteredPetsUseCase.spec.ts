@@ -20,7 +20,8 @@ describe("Unity testing listFilteredPetsUseCase", () => {
 			city: "Petville",
 			state: "RS",
 			phone: "555-1234",
-			email: "contact@animalshelter.org"
+			email: "contact@animalshelter.org",
+			password: "123456"
 		};
 
 		await petRepository.register({
@@ -62,7 +63,8 @@ describe("Unity testing listFilteredPetsUseCase", () => {
 			city: "Petville",
 			state: "RS",
 			phone: "555-1234",
-			email: "contact@animalshelter.org"
+			email: "contact@animalshelter.org",
+			password: "123456"
 		};
 
 		const filters = { species: Species.CAT, size: Size.SMALL };
