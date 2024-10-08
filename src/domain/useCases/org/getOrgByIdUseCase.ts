@@ -6,17 +6,17 @@ interface GetOrgByIdUseCaseRequest {
 }
 
 interface GetOrgByIdUseCaseResponse {
-    Org: Org | null
+    org: Org | null
 }
 
 export class GetOrgByIdUseCase {
     constructor(private repository: OrgRepository) {}
 
     async execute({id}: GetOrgByIdUseCaseRequest): Promise<GetOrgByIdUseCaseResponse> {
-        const Org = await this.repository.getById(id)
+        const org = await this.repository.getById(id)
 
         return {
-            Org
+            org
         }
     }
 }

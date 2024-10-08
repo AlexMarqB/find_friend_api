@@ -1,6 +1,5 @@
 import { Org, States } from "@prisma/client";
 import { OrgRepository } from "../../repositories/orgRepository";
-import { ResourceNotFoundError } from "../../../errors/ResourceNotFoundError";
 import { _bcrypt } from "../../../lib/bcrypt";
 import { isValidCNPJ } from "../../../utils/validateCnpj";
 import { InvalidDataError } from "../../../errors/InvalidDataError";
@@ -38,6 +37,12 @@ export class RegisterOrgUseCase {
 		if (!isValidCNPJ(cnpj)) {
 			throw new InvalidDataError("Invalid CNPJ");
 		}
+
+        const orgExists = await this.repository.getByCnpj(cnpj);
+
+        if(orgExists) {
+            throw new InvalidDataError("CNPJ already in use");
+        }
 
 		const org = await this.repository.register({
 			id,

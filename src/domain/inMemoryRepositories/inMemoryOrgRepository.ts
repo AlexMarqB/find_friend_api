@@ -22,6 +22,12 @@ export class InMemoryOrgRepository implements OrgRepository {
         return org ?? null
     }
 
+    async getByCnpj(cnpj: string): Promise<Org | null> {
+        const org = this.items.find(org => org.cnpj === cnpj)
+
+        return org ?? null
+    }
+
     async listOrgsByCity(city: string): Promise<Org[]> {
         const orgs = this.items.filter(org => org.city.includes(city))
 
