@@ -2,39 +2,56 @@ import { Org, States } from "@prisma/client";
 import { OrgRepository } from "../../repositories/orgRepository";
 import { ResourceNotFoundError } from "../../../errors/ResourceNotFoundError";
 import { _bcrypt } from "../../../lib/bcrypt";
+import { isValidCNPJ } from "../../../utils/validateCnpj";
+import { InvalidDataError } from "../../../errors/InvalidDataError";
 
 interface RegisterOrgRequest {
-    id?: string;
-    name: string;
-    phone: string;
-    email: string;
-    password: string;
-    city: string;
-    state: States;
+	id?: string;
+	name: string;
+	cnpj: string;
+	phone: string;
+	email: string;
+	password: string;
+	city: string;
+	state: States;
 }
 
 interface RegisterOrgResponse {
-    org: Org
+	org: Org;
 }
 
 export class RegisterOrgUseCase {
-    constructor(private repository: OrgRepository) {}
-        
-    async execute({id, name, phone, email, password, city, state}: RegisterOrgRequest): Promise<RegisterOrgResponse> {
-        const hashPassword = await _bcrypt.hash(password, 10)
+	constructor(private repository: OrgRepository) {}
 
-        const org = await this.repository.register({
-            id,
-            name,
-            phone,
-            email,
-            password: hashPassword,
-            city,
-            state
-        })
+	async execute({
+		id,
+		name,
+		phone,
+		email,
+		cnpj,
+		password,
+		city,
+		state,
+	}: RegisterOrgRequest): Promise<RegisterOrgResponse> {
+		const hashPassword = await _bcrypt.hash(password, 10);
 
-        return {
-            org
-        }
-    }
+		if (!isValidCNPJ(cnpj)) {
+			throw new InvalidDataError("Invalid CNPJ");
+		}
+
+		const org = await this.repository.register({
+			id,
+			name,
+			cnpj,
+			phone,
+			email,
+			password: hashPassword,
+			city,
+			state,
+		});
+
+		return {
+			org,
+		};
+	}
 }
