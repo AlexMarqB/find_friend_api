@@ -86,6 +86,7 @@ model Pet {
 
 model Org {
   id       String @id @default(cuid())
+  cnpj     String @unique
   name     String
   phone    String
   email    String
