@@ -1,15 +1,17 @@
-import { Prisma, Pet, Personality, Species, Size, Org } from "@prisma/client";
+import { Prisma, Pet, Size, Genre, Org } from "@prisma/client";
 
-export interface filterProps {
-	personality?: Personality;
-	age?: number;
-	species?: Species;
-	color?: String;
-	size?: Size;
+export interface FilterProps {
+    name?: string;
+    genre?: Genre;
+    personality?: string;
+    age?: number;
+    species?: string;
+    color?: string;
+    size?: Size;
 }
 
 export interface PetRepository {
-	register(data: Prisma.PetUncheckedCreateInput): Promise<Pet>;
-    listFilteredPets(orgs: Org[], filters: filterProps): Promise<Pet[]>;
-    getById(id: string): Promise<Pet | null>;
+    registerPet(data: Prisma.PetUncheckedCreateInput): Promise<Pet>;
+    getPetById(id: string): Promise<Pet | null>;
+    getPetsByFilter(filteredOrgs: Org[], filters: FilterProps): Promise<Pet[]>;
 }

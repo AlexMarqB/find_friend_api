@@ -1,22 +1,28 @@
-import { Org } from "@prisma/client";
+import { z } from "zod";
+import { InvalidDataError } from "../../../errors/InvalidDataError";
+import { formatCnpj, isValidCNPJ } from "../../../utils/cnpj";
 import { OrgRepository } from "../../repositories/orgRepository";
 
-interface GetOrgByCnpjUseCaseRequest {
-    cnpj: string
-}
+export class getOrgByCnpjUseCase {
 
-interface GetOrgByCnpjUseCaseResponse {
-    org: Org | null
-}
-
-export class GetOrgByCnpjUseCase {
     constructor(private repository: OrgRepository) {}
 
-    async execute({cnpj}: GetOrgByCnpjUseCaseRequest): Promise<GetOrgByCnpjUseCaseResponse> {
-        const org = await this.repository.getByCnpj(cnpj)
+    async execute(cnpj: string) {
+        const cnpjSchema = z.string();
 
-        return {
-            org
+        const parsed = cnpjSchema.safeParse(cnpj);
+
+        if(!parsed.success) {
+            throw new InvalidDataError(parsed.error.errors[0].message);
         }
+
+        
+        if(!isValidCNPJ(parsed.data)) {
+            throw new InvalidDataError("CNPJ inválido");
+        }
+
+        const format = formatCnpj(parsed.data);
+
+        return this.repository.getOrgByCnpj(formatCnpj(format));
     }
 }

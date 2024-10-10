@@ -1,62 +1,40 @@
-import { Org, States } from "@prisma/client";
+import { Prisma, State, Country } from "@prisma/client";
 import { OrgRepository } from "../../repositories/orgRepository";
-import { _bcrypt } from "../../../lib/bcrypt";
-import { isValidCNPJ } from "../../../utils/validateCnpj";
+import { formatCnpj, isValidCNPJ } from "../../../utils/cnpj";
 import { InvalidDataError } from "../../../errors/InvalidDataError";
-
-interface RegisterOrgRequest {
-	id?: string;
-	name: string;
-	cnpj: string;
-	phone: string;
-	email: string;
-	password: string;
-	city: string;
-	state: States;
-}
-
-interface RegisterOrgResponse {
-	org: Org;
-}
+import { z } from "zod";
 
 export class RegisterOrgUseCase {
-	constructor(private repository: OrgRepository) {}
+    constructor(private repository: OrgRepository) {}
 
-	async execute({
-		id,
-		name,
-		phone,
-		email,
-		cnpj,
-		password,
-		city,
-		state,
-	}: RegisterOrgRequest): Promise<RegisterOrgResponse> {
-		const hashPassword = await _bcrypt.hash(password, 10);
+    async execute(data: Prisma.OrgUncheckedCreateInput) {
+        const registerOrgSchema = z.object({
+            city: z.string(),
+            cnpj: z.string(),
+            email: z.string().email(),
+            name: z.string(),
+            password: z.string(),
+            phone: z.string(),
+            state: z.nativeEnum(State),
+            country: z.nativeEnum(Country).optional()
+        })
 
-		if (!isValidCNPJ(cnpj)) {
-			throw new InvalidDataError("Invalid CNPJ");
-		}
+        const parsed = registerOrgSchema.safeParse(data);
 
-        const orgExists = await this.repository.getByCnpj(cnpj);
+        if(!parsed.success) {
+            throw new InvalidDataError(parsed.error.errors[0].message);
+        }
+        
+        const {cnpj, ...props} = parsed.data;
 
-        if(orgExists) {
-            throw new InvalidDataError("CNPJ already in use");
+        if(!isValidCNPJ(cnpj)) {
+            throw new InvalidDataError("CNPJ inválido");
         }
 
-		const org = await this.repository.register({
-			id,
-			name,
-			cnpj,
-			phone,
-			email,
-			password: hashPassword,
-			city,
-			state,
-		});
-
-		return {
-			org,
-		};
-	}
+        if(await this.repository.getOrgByCnpj(cnpj)) {
+            throw new InvalidDataError("Organização já cadastrada");
+        }
+        
+        return this.repository.registerOrg({cnpj: formatCnpj(cnpj), ...props});
+    }
 }

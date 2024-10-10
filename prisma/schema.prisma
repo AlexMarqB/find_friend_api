@@ -13,27 +13,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Personality {
-  CALM
-  ACTIVE
-  LAZY
-  SLEEPY
-}
-
-enum Species {
-  DOG
-  CAT
-  RODENT
-  BIRD
-}
-
 enum Size {
   SMALL
   MEDIUM
   LARGE
 }
 
-enum States {
+enum Genre {
+  F
+  M
+}
+
+model Pet {
+  id          String  @id @default(cuid())
+  name        String
+  genre       Genre
+  personality String
+  age         Int
+  species     String
+  color       String
+  size        Size
+  adopted     Boolean @default(false)
+
+  Org      Org    @relation(fields: [org_cnpj], references: [cnpj])
+  org_cnpj String
+
+  @@map("tb_pets")
+}
+
+enum State {
   AC
   AL
   AP
@@ -63,49 +71,40 @@ enum States {
   TO
 }
 
-enum Role {
-  ADMIN
-  USER
-}
-
-model Pet {
-  id          String      @id @default(cuid())
-  name        String
-  personality Personality
-  age         Int
-  species     Species
-  color       String
-  size        Size
-  adopted     Boolean     @default(false)
-
-  Org    Org    @relation(fields: [org_id], references: [id])
-  org_id String
-
-  @@map("tb_pets")
+enum Country {
+  BR
+  US
+  CA
+  MX
+  AR
+  CL
+  CO
+  CR
+  CU
+  DO
+  EC
+  SV
+  GT
+  HN
+  NI
+  PA
+  PY
+  PE
+  UY
+  VE
 }
 
 model Org {
-  id       String @id @default(cuid())
-  cnpj     String @unique
+  cnpj     String  @id
   name     String
-  phone    String
-  email    String
   password String
+  email    String
+  phone    String
   city     String
-  state    States
+  state    State
+  country  Country @default(BR)
 
   pets Pet[]
 
   @@map("tb_orgs")
-}
-
-model User {
-  id       String @id @default(cuid())
-  name     String
-  email    String
-  phone    String
-  password String
-  role     Role   @default(USER)
-
-  @@map("tb_users")
 }

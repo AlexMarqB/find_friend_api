@@ -40,3 +40,7 @@ export function isValidCNPJ(cnpj: string): boolean {
 
 	return true;
 }
+
+export function formatCnpj(cnpj: string): string {
+	return cnpj.replace(/[^0-9]/g, '');
+}
